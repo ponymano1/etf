@@ -3,10 +3,10 @@ pragma solidity 0.8.24;
 
 import {IETFv1} from "./interfaces/IETFv1.sol";
 import {FullMath} from "./libraries/FullMath.sol";
-import {IERC20} from "@openzeppelin/contracts@5.1.0/token/ERC20/IERC20.sol";
-import {ERC20} from "@openzeppelin/contracts@5.1.0/token/ERC20/ERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts@5.1.0/token/ERC20/utils/SafeERC20.sol";
-import {Ownable} from "@openzeppelin/contracts@5.1.0/access/Ownable.sol";
+import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import {ERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import {SafeERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
+import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract ETFv1 is IETFv1, ERC20, Ownable {
     using SafeERC20 for IERC20;
@@ -96,6 +96,7 @@ contract ETFv1 is IETFv1, ERC20, Ownable {
                     totalSupply
                 );
             } else {
+                //结果向上取整，避免出现0。如果不向上取整，用户可以铸造很少的份额，导致需要的token数量为0
                 tokenAmounts[i] = mintAmount.mulDivRoundingUp(
                     _initTokenAmountPerShares[i],
                     1e18
