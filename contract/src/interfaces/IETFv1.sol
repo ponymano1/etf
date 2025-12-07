@@ -34,6 +34,13 @@ interface IETFv1 {
 
     function updateMinMintAmount(uint256 newMinMintAmount) external;
 
+    /**
+     * 铸造份额给用户
+     * 转移token到合约
+     * 注意：invest with all tokens, msg.sender need have approved all tokens to this contract
+     * @param to
+     * @param mintAmount
+     */
     function invest(address to, uint256 mintAmount) external;
 
     function redeem(address to, uint256 burnAmount) external;

@@ -8,6 +8,14 @@ import {ERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol"
 import {SafeERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
+/**
+ * @title ETFv1
+ * @author PONYMANO
+ * @notice 基础base合约，只处理核心逻辑，不处理交易路径
+ * @dev This contract is used to create and manage the ETF.
+ * 初始比例由构造函数传入
+ * @dev This contract is used to create and manage the ETF.
+ */
 contract ETFv1 is IETFv1, ERC20, Ownable {
     using SafeERC20 for IERC20;
     using FullMath for uint256;
@@ -46,11 +54,15 @@ contract ETFv1 is IETFv1, ERC20, Ownable {
     }
 
     function updateMinMintAmount(uint256 newMinMintAmount) external onlyOwner {
-        emit MinMintAmountUpdated(minMintAmount, newMinMintAmount);
         minMintAmount = newMinMintAmount;
     }
 
-    // invest with all tokens, msg.sender need have approved all tokens to this contract
+    /**
+     * 计算需要的每个token的数量
+     * 铸造份额给用户
+     * 转移token到合约
+     * 注意：invest with all tokens, msg.sender need have approved all tokens to this contract
+     */
     function invest(address to, uint256 mintAmount) public {
         uint256[] memory tokenAmounts = _invest(to, mintAmount);
         for (uint256 i = 0; i < _tokens.length; i++) {
@@ -80,6 +92,12 @@ contract ETFv1 is IETFv1, ERC20, Ownable {
         return _initTokenAmountPerShares;
     }
 
+    /**
+     * 根据mintAmount计算需要的每个token的数量
+     * @param mintAmount 铸造的份额数量
+     * @notice 结果向上取整，避免出现0。如果不向上取整，用户可以铸造很少的份额，导致需要的token数量为0
+     * 计算核心等式 tokenAmount / tokenReserve = mintAmount / totalSupply
+     */
     function getInvestTokenAmounts(
         uint256 mintAmount
     ) public view returns (uint256[] memory tokenAmounts) {
@@ -105,6 +123,12 @@ contract ETFv1 is IETFv1, ERC20, Ownable {
         }
     }
 
+    /**
+     * 根据burnAmount计算需要的每个token的数量
+     * @param burnAmount 销毁的份额数量
+     * @notice 结果向下取整，避免出现0。如果不向下取整，用户可以销毁很少的份额，导致需要的token数量为0
+     * 计算核心等式 tokenAmount / tokenReserve = burnAmount / totalSupply
+     */
     function getRedeemTokenAmounts(
         uint256 burnAmount
     ) public view returns (uint256[] memory tokenAmounts) {
@@ -122,6 +146,13 @@ contract ETFv1 is IETFv1, ERC20, Ownable {
         }
     }
 
+    /**
+     * 根据mintAmount计算需要的每个token的数量
+     * 计算手续费
+     * 铸造份额给用户，并收取手续费
+     * notice: 手续费是根据mintAmount计算的，而不是根据tokenAmounts计算的
+     *
+     */
     function _invest(
         address to,
         uint256 mintAmount
