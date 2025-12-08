@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IETFv1 {
+interface IETFCore {
     error LessThanMinMintAmount();
     error TokenNotFound();
     error TokenExists();

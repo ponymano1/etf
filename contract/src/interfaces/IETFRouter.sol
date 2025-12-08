@@ -1,9 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IETFv1} from "./IETFv1.sol";
+import {IETFCore} from "./IETFCore.sol";
 
-interface IETFv2 is IETFv1 {
+/**
+ * @title IETFRouter
+ * @author
+ * @notice
+ * router合约，用于将用户USDT兑换为底层资产，并铸造份额给用户
+ */
+
+interface IETFRouter is IETFCore {
     error InvalidSwapPath(bytes swapPath);
     error InvalidArrayLength();
     error OverSlippage();

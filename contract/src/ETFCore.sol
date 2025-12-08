@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
-import {IETFv1} from "./interfaces/IETFv1.sol";
+import {IETFCore} from "./interfaces/IETFCore.sol";
 import {FullMath} from "./libraries/FullMath.sol";
 import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import {ERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
@@ -9,14 +9,14 @@ import {SafeERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/utils/
 import {Ownable} from "lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
 /**
- * @title ETFv1
+ * @title ETFCore
  * @author PONYMANO
  * @notice 基础base合约，只处理核心逻辑，不处理交易路径
  * @dev This contract is used to create and manage the ETF.
  * 初始比例由构造函数传入
  * @dev This contract is used to create and manage the ETF.
  */
-contract ETFv1 is IETFv1, ERC20, Ownable {
+contract ETFCore is IETFCore, ERC20, Ownable {
     using SafeERC20 for IERC20;
     using FullMath for uint256;
 
